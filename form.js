@@ -4,6 +4,31 @@ const statusEl = document.getElementById("form-status");
 const membersList = document.getElementById("members-list");
 const addMemberBtn = document.getElementById("add-member-btn");
 
+const AREA_KEYS = [
+  "government_services",
+  "excellence_assessment",
+  "happiness_surveys",
+  "policies",
+  "dubai_plan_agendas",
+  "sg_office",
+  "decision_follow_up",
+  "decision_making",
+  "data_analysis",
+  "hr",
+  "it",
+  "admin",
+  "finance",
+  "project_management",
+  "audit",
+  "governance",
+];
+
+function currentLangDict() {
+  return translations[getLang()];
+}
+
+/* ---------- Team members ---------- */
+
 function addMemberRow(value = "") {
   const t = currentLangDict();
   const row = document.createElement("div");
@@ -44,13 +69,87 @@ if (membersList) {
   addMemberBtn.addEventListener("click", () => addMemberRow());
 }
 
+/* ---------- Areas (multi-select dropdown) ---------- */
+
+const areaSelect = document.getElementById("area-select");
+const areaTrigger = document.getElementById("area-trigger");
+const areaPanel = document.getElementById("area-panel");
+const areaValue = document.getElementById("area-value");
+
+function buildAreaOptions() {
+  const t = currentLangDict();
+  areaPanel.innerHTML = "";
+  AREA_KEYS.forEach((key) => {
+    const row = document.createElement("label");
+    row.className = "multiselect-option";
+
+    const cb = document.createElement("input");
+    cb.type = "checkbox";
+    cb.className = "area-checkbox";
+    cb.value = key;
+    cb.addEventListener("change", updateAreaValue);
+
+    const span = document.createElement("span");
+    span.setAttribute("data-i18n", "area_" + key);
+    span.textContent = t["area_" + key];
+
+    row.appendChild(cb);
+    row.appendChild(span);
+    areaPanel.appendChild(row);
+  });
+}
+
+function getSelectedAreaKeys() {
+  return Array.from(areaPanel.querySelectorAll(".area-checkbox:checked")).map((c) => c.value);
+}
+
+function updateAreaValue() {
+  const t = currentLangDict();
+  const keys = getSelectedAreaKeys();
+  if (keys.length === 0) {
+    areaValue.setAttribute("data-i18n", "area_placeholder");
+    areaValue.textContent = t.area_placeholder;
+    areaValue.classList.add("multiselect-placeholder");
+    areaValue.removeAttribute("title");
+  } else {
+    const sep = getLang() === "ar" ? "، " : ", ";
+    const labels = keys.map((k) => t["area_" + k]).join(sep);
+    areaValue.removeAttribute("data-i18n");
+    areaValue.textContent = labels;
+    areaValue.classList.remove("multiselect-placeholder");
+    areaValue.setAttribute("title", labels);
+  }
+}
+
+function openAreaPanel() {
+  areaPanel.removeAttribute("hidden");
+  areaTrigger.setAttribute("aria-expanded", "true");
+}
+
+function closeAreaPanel() {
+  areaPanel.setAttribute("hidden", "");
+  areaTrigger.setAttribute("aria-expanded", "false");
+}
+
+if (areaSelect) {
+  buildAreaOptions();
+  updateAreaValue();
+
+  areaTrigger.addEventListener("click", () => {
+    if (areaPanel.hasAttribute("hidden")) openAreaPanel();
+    else closeAreaPanel();
+  });
+
+  document.addEventListener("click", (event) => {
+    if (!areaSelect.contains(event.target)) closeAreaPanel();
+  });
+}
+
+/* ---------- Validation + submit ---------- */
+
 function setError(fieldName, message) {
   const el = form.querySelector(`[data-error-for="${fieldName}"]`);
   if (el) el.textContent = message;
-}
-
-function currentLangDict() {
-  return translations[getLang()];
 }
 
 function validate() {
@@ -61,7 +160,7 @@ function validate() {
   const totalMembers = form.elements.total_members.value;
   const memberNames = getMemberNames();
   const option = form.querySelector('input[name="option"]:checked');
-  const area = form.elements.area.value;
+  const areaKeys = getSelectedAreaKeys();
 
   setError("team_name", teamName ? "" : t.error_required_team_name);
   if (!teamName) valid = false;
@@ -75,8 +174,8 @@ function validate() {
   setError("option", option ? "" : t.error_required_option);
   if (!option) valid = false;
 
-  setError("area", area ? "" : t.error_required_area);
-  if (!area) valid = false;
+  setError("area", areaKeys.length > 0 ? "" : t.error_required_area);
+  if (areaKeys.length === 0) valid = false;
 
   return valid;
 }
@@ -89,12 +188,17 @@ form.addEventListener("submit", async (event) => {
 
   if (!validate()) return;
 
+  // Store the selected areas as a readable comma-separated list of English labels.
+  const areaLabels = getSelectedAreaKeys()
+    .map((k) => translations.en["area_" + k])
+    .join(", ");
+
   const payload = {
     team_name: form.elements.team_name.value.trim(),
     total_members: Number(form.elements.total_members.value),
     members: getMemberNames(),
     option: form.querySelector('input[name="option"]:checked').value,
-    area: form.elements.area.value,
+    area: areaLabels,
   };
 
   submitBtn.disabled = true;
@@ -114,6 +218,8 @@ form.addEventListener("submit", async (event) => {
 
     if (response.ok) {
       form.reset();
+      updateAreaValue();
+      closeAreaPanel();
       statusEl.textContent = t.success;
       statusEl.setAttribute("data-state", "success");
     } else {
@@ -138,4 +244,5 @@ document.addEventListener("langchange", () => {
   membersList.querySelectorAll(".member-remove").forEach((el) => {
     el.setAttribute("aria-label", t.remove_member);
   });
+  updateAreaValue();
 });

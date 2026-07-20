@@ -13,8 +13,6 @@
       <img src="assets/logo.png" alt="Summer at TEC" />
     </div>
     <nav class="topbar-actions">
-      <a class="pill-link active" href="index.html" data-i18n="nav_form">Register</a>
-      <a class="pill-link" href="dashboard.html" data-i18n="nav_dashboard">Dashboard</a>
       <button type="button" class="pill-button" id="lang-toggle" data-i18n="lang_toggle">العربية</button>
     </nav>
   </header>
@@ -66,17 +64,14 @@
         </div>
 
         <div class="field">
-          <label for="area" data-i18n="label_area">Selected area</label>
-          <select id="area" name="area" required>
-            <option value="" disabled selected data-i18n="area_placeholder">Choose an area</option>
-            <option value="project_management" data-i18n="area_project_management">Project Management</option>
-            <option value="governance" data-i18n="area_governance">Governance</option>
-            <option value="data_analysis" data-i18n="area_data_analysis">Data Analysis</option>
-            <option value="government_communication" data-i18n="area_government_communication">Government Communication</option>
-            <option value="happiness_surveys" data-i18n="area_happiness_surveys">Happiness Surveys</option>
-            <option value="admin" data-i18n="area_admin">Admin</option>
-            <option value="excellence_assessment" data-i18n="area_excellence_assessment">Excellence Assessment</option>
-          </select>
+          <label id="area-label" data-i18n="label_area">Selected areas</label>
+          <div class="multiselect" id="area-select">
+            <button type="button" class="multiselect-trigger" id="area-trigger" aria-haspopup="true" aria-expanded="false">
+              <span id="area-value" class="multiselect-placeholder" data-i18n="area_placeholder">Choose areas</span>
+              <span class="multiselect-caret" aria-hidden="true"></span>
+            </button>
+            <div class="multiselect-panel" id="area-panel" role="group" aria-labelledby="area-label" hidden></div>
+          </div>
           <p class="error" data-error-for="area"></p>
         </div>
 
