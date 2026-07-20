@@ -1,22 +1,9 @@
-const GITHUB_OWNER = "meeraibrahim09-cyber";
-const GITHUB_REPO = "ai-challenge";
-
 const tableEl = document.getElementById("submissions-table");
 const bodyEl = document.getElementById("submissions-body");
 const messageEl = document.getElementById("dashboard-message");
 const refreshBtn = document.getElementById("refresh-btn");
 
 let submissions = [];
-
-function parsePayload(issueBody) {
-  const match = issueBody && issueBody.match(/```json\s*([\s\S]*?)```/);
-  if (!match) return null;
-  try {
-    return JSON.parse(match[1]);
-  } catch (err) {
-    return null;
-  }
-}
 
 function optionLabel(t, value) {
   if (value === "solution") return t.option_solution;
@@ -37,16 +24,16 @@ async function loadSubmissions() {
 
   try {
     const response = await fetch(
-      `https://api.github.com/repos/${GITHUB_OWNER}/${GITHUB_REPO}/issues?labels=submission&state=all&per_page=100`,
-      { headers: { Accept: "application/vnd.github+json" } }
+      `${SUPABASE_URL}/rest/v1/${SUPABASE_TABLE}?select=*&order=created_at.desc`,
+      {
+        headers: {
+          apikey: SUPABASE_ANON_KEY,
+          Authorization: `Bearer ${SUPABASE_ANON_KEY}`,
+        },
+      }
     );
     if (!response.ok) throw new Error("bad response");
-    const issues = await response.json();
-
-    submissions = issues
-      .map((issue) => ({ payload: parsePayload(issue.body), created_at: issue.created_at }))
-      .filter((row) => row.payload)
-      .sort((a, b) => new Date(b.created_at) - new Date(a.created_at));
+    submissions = await response.json();
 
     render();
   } catch (err) {
@@ -81,18 +68,18 @@ function render() {
   });
 
   bodyEl.innerHTML = "";
-  submissions.forEach(({ payload, created_at }) => {
+  submissions.forEach((row) => {
     const tr = document.createElement("tr");
 
-    const members = Array.isArray(payload.members) ? payload.members : [];
+    const members = Array.isArray(row.members) ? row.members : [];
 
     const cells = [
-      { label: t.col_team_name, value: payload.team_name },
-      { label: t.col_total_members, value: payload.total_members },
+      { label: t.col_team_name, value: row.team_name },
+      { label: t.col_total_members, value: row.total_members },
       { label: t.col_members, members: members },
-      { label: t.col_option, value: optionLabel(t, payload.option) },
-      { label: t.col_area, value: areaLabel(t, payload.area), tag: true },
-      { label: t.col_submitted, value: dateFormatter.format(new Date(created_at)) },
+      { label: t.col_option, value: optionLabel(t, row.option) },
+      { label: t.col_area, value: areaLabel(t, row.area), tag: true },
+      { label: t.col_submitted, value: dateFormatter.format(new Date(row.created_at)) },
     ];
 
     cells.forEach(({ label, value, tag, members: memberValues }) => {

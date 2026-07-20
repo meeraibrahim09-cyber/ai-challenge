@@ -1,7 +1,3 @@
-const GITHUB_OWNER = "meeraibrahim09-cyber";
-const GITHUB_REPO = "ai-challenge";
-const GITHUB_TOKEN = "REPLACE_WITH_FINE_GRAINED_PAT";
-
 const form = document.getElementById("signup-form");
 const submitBtn = document.getElementById("submit-btn");
 const statusEl = document.getElementById("form-status");
@@ -85,11 +81,6 @@ function validate() {
   return valid;
 }
 
-function labelFor(select, value) {
-  const opt = select.querySelector(`option[value="${value}"]`);
-  return opt ? opt.textContent : value;
-}
-
 form.addEventListener("submit", async (event) => {
   event.preventDefault();
   const t = currentLangDict();
@@ -98,53 +89,27 @@ form.addEventListener("submit", async (event) => {
 
   if (!validate()) return;
 
-  const teamName = form.elements.team_name.value.trim();
-  const totalMembers = Number(form.elements.total_members.value);
-  const memberNames = getMemberNames();
-  const optionInput = form.querySelector('input[name="option"]:checked');
-  const optionValue = optionInput.value;
-  const optionLabel = optionInput.closest(".radio-option").querySelector("span").textContent;
-  const areaSelect = form.elements.area;
-  const areaValue = areaSelect.value;
-  const areaLabel = labelFor(areaSelect, areaValue);
-
   const payload = {
-    team_name: teamName,
-    total_members: totalMembers,
-    members: memberNames,
-    option: optionValue,
-    area: areaValue,
+    team_name: form.elements.team_name.value.trim(),
+    total_members: Number(form.elements.total_members.value),
+    members: getMemberNames(),
+    option: form.querySelector('input[name="option"]:checked').value,
+    area: form.elements.area.value,
   };
-
-  const body = [
-    `**${t.label_team_name}:** ${teamName}`,
-    `**${t.label_total_members}:** ${totalMembers}`,
-    `**${t.label_members}:**`,
-    ...memberNames.map((name) => `- ${name}`),
-    `**${t.label_option}:** ${optionLabel}`,
-    `**${t.label_area}:** ${areaLabel}`,
-    "",
-    "```json",
-    JSON.stringify(payload),
-    "```",
-  ].join("\n");
 
   submitBtn.disabled = true;
   submitBtn.textContent = t.submitting;
 
   try {
-    const response = await fetch(`https://api.github.com/repos/${GITHUB_OWNER}/${GITHUB_REPO}/issues`, {
+    const response = await fetch(`${SUPABASE_URL}/rest/v1/${SUPABASE_TABLE}`, {
       method: "POST",
       headers: {
-        Accept: "application/vnd.github+json",
-        Authorization: `Bearer ${GITHUB_TOKEN}`,
+        apikey: SUPABASE_ANON_KEY,
+        Authorization: `Bearer ${SUPABASE_ANON_KEY}`,
         "Content-Type": "application/json",
+        Prefer: "return=minimal",
       },
-      body: JSON.stringify({
-        title: teamName,
-        body,
-        labels: ["submission"],
-      }),
+      body: JSON.stringify(payload),
     });
 
     if (response.ok) {
