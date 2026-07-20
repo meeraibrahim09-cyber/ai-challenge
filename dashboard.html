@@ -10,27 +10,67 @@
 <body>
   <header class="topbar">
     <div class="brand">
-      <img src="assets/logo.png" alt="Summer at TEC" />
+      <img src="https://meeraibrahim09-cyber.github.io/ai-challenge/assets/logo.png" alt="Summer at TEC" />
     </div>
     <nav class="topbar-actions">
       <a class="pill-link" href="index.html" data-i18n="nav_form">Register</a>
       <a class="pill-link active" href="dashboard.html" data-i18n="nav_dashboard">Dashboard</a>
+      <button type="button" class="pill-button" id="logout-btn" data-i18n="logout" hidden>Sign out</button>
       <button type="button" class="pill-button" id="lang-toggle" data-i18n="lang_toggle">العربية</button>
     </nav>
   </header>
 
-  <div class="hero">
+  <div class="hero hero-dashboard">
     <div class="hero-inner">
       <p class="hero-eyebrow" data-i18n="campaign">Summer at TEC</p>
-      <h1 data-i18n="dashboard_title">Submitted teams</h1>
+      <h1 data-i18n="dashboard_title">Registered teams</h1>
     </div>
   </div>
 
   <main>
-    <div class="dashboard-wrap">
+    <div class="card" id="login-view" hidden>
+      <h2 class="login-title" data-i18n="login_title">Sign in</h2>
+      <p class="subtitle" data-i18n="login_subtitle">Enter your credentials to view submissions.</p>
+      <form id="login-form" novalidate>
+        <div class="field">
+          <label for="email" data-i18n="login_email">Email</label>
+          <input type="email" id="email" name="email" autocomplete="username" required />
+        </div>
+        <div class="field">
+          <label for="password" data-i18n="login_password">Password</label>
+          <input type="password" id="password" name="password" autocomplete="current-password" required />
+        </div>
+        <button type="submit" id="login-btn" data-i18n="login_submit">Sign in</button>
+        <p class="status" id="login-status" role="status" aria-live="polite"></p>
+      </form>
+    </div>
+
+    <div class="dashboard-wrap" id="dashboard-view" hidden>
       <div class="dashboard-header">
-        <p class="subtitle" data-i18n="dashboard_subtitle" style="margin:0">Live list of registered teams.</p>
-        <button type="button" class="pill-link" id="refresh-btn" data-i18n="dashboard_refresh">Refresh</button>
+        <p class="subtitle" data-i18n="dashboard_subtitle" style="margin:0">Live overview of team registrations.</p>
+        <button type="button" class="pill-button" id="refresh-btn">
+          <span class="refresh-icon" aria-hidden="true">⟳</span>
+          <span data-i18n="dashboard_refresh">Refresh</span>
+        </button>
+      </div>
+
+      <div class="stat-grid" id="stat-grid">
+        <div class="stat-card">
+          <span class="stat-value" id="stat-teams">0</span>
+          <span class="stat-label" data-i18n="stat_teams">Teams</span>
+        </div>
+        <div class="stat-card">
+          <span class="stat-value" id="stat-members">0</span>
+          <span class="stat-label" data-i18n="stat_members">Total members</span>
+        </div>
+        <div class="stat-card">
+          <span class="stat-value" id="stat-solution">0</span>
+          <span class="stat-label" data-i18n="stat_solution">AI solutions</span>
+        </div>
+        <div class="stat-card">
+          <span class="stat-value" id="stat-demo">0</span>
+          <span class="stat-label" data-i18n="stat_demo">New AI tools</span>
+        </div>
       </div>
 
       <div class="table-card">
@@ -38,10 +78,10 @@
           <thead>
             <tr>
               <th data-i18n="col_team_name">Team name</th>
-              <th data-i18n="col_total_members">Count</th>
-              <th data-i18n="col_members">Members</th>
+              <th data-i18n="col_total_members">Members</th>
+              <th data-i18n="col_member_names">Team members</th>
               <th data-i18n="col_option">Option</th>
-              <th data-i18n="col_area">Area</th>
+              <th data-i18n="col_area">Areas</th>
               <th data-i18n="col_submitted">Submitted</th>
             </tr>
           </thead>
