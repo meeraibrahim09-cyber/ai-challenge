@@ -150,8 +150,10 @@ async function loadSubmissions() {
 function renderStats() {
   const teams = submissions.length;
   const members = submissions.reduce((sum, r) => sum + (Number(r.total_members) || 0), 0);
-  const solution = submissions.filter((r) => r.option === "solution").length;
-  const demo = submissions.filter((r) => r.option === "demo").length;
+  const hasOption = (r, key) =>
+    (r.option || "").split(",").map((s) => s.trim()).includes(key);
+  const solution = submissions.filter((r) => hasOption(r, "solution")).length;
+  const demo = submissions.filter((r) => hasOption(r, "demo")).length;
   statTeamsEl.textContent = teams;
   statMembersEl.textContent = members;
   statSolutionEl.textContent = solution;
@@ -214,10 +216,20 @@ function render() {
 
     const tdOption = document.createElement("td");
     tdOption.setAttribute("data-label", t.col_option);
-    const optBadge = document.createElement("span");
-    optBadge.className = "badge badge-" + (row.option || "");
-    optBadge.textContent = optionShort(t, row.option);
-    tdOption.appendChild(optBadge);
+    const optionKeys = (row.option || "").split(",").map((s) => s.trim()).filter(Boolean);
+    if (optionKeys.length) {
+      const optList = document.createElement("div");
+      optList.className = "tag-list";
+      optionKeys.forEach((key) => {
+        const b = document.createElement("span");
+        b.className = "badge badge-" + key;
+        b.textContent = optionShort(t, key);
+        optList.appendChild(b);
+      });
+      tdOption.appendChild(optList);
+    } else {
+      tdOption.textContent = "-";
+    }
     tr.appendChild(tdOption);
 
     const tdAreas = document.createElement("td");

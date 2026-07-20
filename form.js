@@ -27,8 +27,6 @@ function currentLangDict() {
   return translations[getLang()];
 }
 
-/* ---------- Team members ---------- */
-
 function addMemberRow(value = "") {
   const t = currentLangDict();
   const row = document.createElement("div");
@@ -64,12 +62,14 @@ function getMemberNames() {
     .filter((v) => v.length > 0);
 }
 
+function getSelectedOptions() {
+  return Array.from(form.querySelectorAll(".option-checkbox:checked")).map((c) => c.value);
+}
+
 if (membersList) {
   addMemberRow();
   addMemberBtn.addEventListener("click", () => addMemberRow());
 }
-
-/* ---------- Areas (multi-select dropdown) ---------- */
 
 const areaSelect = document.getElementById("area-select");
 const areaTrigger = document.getElementById("area-trigger");
@@ -145,8 +145,6 @@ if (areaSelect) {
   });
 }
 
-/* ---------- Validation + submit ---------- */
-
 function setError(fieldName, message) {
   const el = form.querySelector(`[data-error-for="${fieldName}"]`);
   if (el) el.textContent = message;
@@ -159,7 +157,7 @@ function validate() {
   const teamName = form.elements.team_name.value.trim();
   const totalMembers = form.elements.total_members.value;
   const memberNames = getMemberNames();
-  const option = form.querySelector('input[name="option"]:checked');
+  const optionKeys = getSelectedOptions();
   const areaKeys = getSelectedAreaKeys();
 
   setError("team_name", teamName ? "" : t.error_required_team_name);
@@ -171,8 +169,8 @@ function validate() {
   setError("members", memberNames.length > 0 ? "" : t.error_required_members);
   if (memberNames.length === 0) valid = false;
 
-  setError("option", option ? "" : t.error_required_option);
-  if (!option) valid = false;
+  setError("option", optionKeys.length > 0 ? "" : t.error_required_option);
+  if (optionKeys.length === 0) valid = false;
 
   setError("area", areaKeys.length > 0 ? "" : t.error_required_area);
   if (areaKeys.length === 0) valid = false;
@@ -188,7 +186,6 @@ form.addEventListener("submit", async (event) => {
 
   if (!validate()) return;
 
-  // Store the selected areas as a readable comma-separated list of English labels.
   const areaLabels = getSelectedAreaKeys()
     .map((k) => translations.en["area_" + k])
     .join(", ");
@@ -197,7 +194,7 @@ form.addEventListener("submit", async (event) => {
     team_name: form.elements.team_name.value.trim(),
     total_members: Number(form.elements.total_members.value),
     members: getMemberNames(),
-    option: form.querySelector('input[name="option"]:checked').value,
+    option: getSelectedOptions().join(", "),
     area: areaLabels,
   };
 
