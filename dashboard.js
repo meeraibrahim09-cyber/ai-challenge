@@ -84,18 +84,34 @@ function render() {
   submissions.forEach(({ payload, created_at }) => {
     const tr = document.createElement("tr");
 
+    const members = Array.isArray(payload.members) ? payload.members : [];
+
     const cells = [
       { label: t.col_team_name, value: payload.team_name },
       { label: t.col_total_members, value: payload.total_members },
+      { label: t.col_members, members: members },
       { label: t.col_option, value: optionLabel(t, payload.option) },
       { label: t.col_area, value: areaLabel(t, payload.area), tag: true },
       { label: t.col_submitted, value: dateFormatter.format(new Date(created_at)) },
     ];
 
-    cells.forEach(({ label, value, tag }) => {
+    cells.forEach(({ label, value, tag, members: memberValues }) => {
       const td = document.createElement("td");
       td.setAttribute("data-label", label);
-      if (tag) {
+      if (memberValues) {
+        if (memberValues.length) {
+          const ul = document.createElement("ul");
+          ul.className = "member-names";
+          memberValues.forEach((name) => {
+            const li = document.createElement("li");
+            li.textContent = name;
+            ul.appendChild(li);
+          });
+          td.appendChild(ul);
+        } else {
+          td.textContent = "—";
+        }
+      } else if (tag) {
         const span = document.createElement("span");
         span.className = "tag";
         span.textContent = value;
