@@ -1,47 +1,88 @@
 <!doctype html>
-<html lang="en">
+<html lang="en" dir="ltr">
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Team Check-in</title>
-  <meta name="description" content="Quick sign-up form." />
+  <title>Summer at TEC — Team Registration</title>
+  <meta name="description" content="Team registration form." />
   <link rel="stylesheet" href="style.css" />
 </head>
 <body>
-  <main class="card">
-    <h1>Team Check-in</h1>
-    <p class="subtitle">Fill in your details below.</p>
+  <header class="topbar">
+    <div class="brand">
+      <img src="assets/logo.png" alt="Summer at TEC" />
+    </div>
+    <nav class="topbar-actions">
+      <a class="pill-link active" href="index.html" data-i18n="nav_form">Register</a>
+      <a class="pill-link" href="dashboard.html" data-i18n="nav_dashboard">Dashboard</a>
+      <button type="button" class="pill-button" id="lang-toggle" data-i18n="lang_toggle">العربية</button>
+    </nav>
+  </header>
 
-    <form id="signup-form" novalidate>
-      <div class="field">
-        <label for="name">Name</label>
-        <input type="text" id="name" name="name" autocomplete="name" required />
-        <p class="error" data-error-for="name"></p>
-      </div>
+  <div class="hero">
+    <div class="hero-inner">
+      <p class="hero-eyebrow" data-i18n="campaign">Summer at TEC</p>
+      <h1 data-i18n="page_title">Team Registration</h1>
+    </div>
+  </div>
 
-      <div class="field">
-        <label for="team">Team name</label>
-        <input type="text" id="team" name="team" autocomplete="organization" required />
-        <p class="error" data-error-for="team"></p>
-      </div>
+  <main>
+    <div class="card">
+      <p class="subtitle" data-i18n="subtitle">Fill in your team's details below.</p>
 
-      <div class="field">
-        <label for="option">Option</label>
-        <select id="option" name="option" required>
-          <option value="" disabled selected>Choose one</option>
-          <option value="Option A">Option A</option>
-          <option value="Option B">Option B</option>
-          <option value="Option C">Option C</option>
-        </select>
-        <p class="error" data-error-for="option"></p>
-      </div>
+      <form id="signup-form" novalidate>
+        <div class="field">
+          <label for="team_name" data-i18n="label_team_name">Team name</label>
+          <input type="text" id="team_name" name="team_name" required />
+          <p class="error" data-error-for="team_name"></p>
+        </div>
 
-      <button type="submit" id="submit-btn">Submit</button>
+        <div class="field">
+          <label for="total_members" data-i18n="label_total_members">Total members</label>
+          <input type="number" id="total_members" name="total_members" min="1" step="1" inputmode="numeric" required />
+          <p class="error" data-error-for="total_members"></p>
+        </div>
 
-      <p class="status" id="form-status" role="status" aria-live="polite"></p>
-    </form>
+        <div class="field">
+          <label data-i18n="label_option">Choose option</label>
+          <div class="radio-group" role="radiogroup">
+            <label class="radio-option">
+              <input type="radio" name="option" value="solution" required />
+              <span data-i18n="option_solution">You develop an innovative solution for the proposed domains</span>
+            </label>
+            <label class="radio-option">
+              <input type="radio" name="option" value="demo" required />
+              <span data-i18n="option_demo">You provide a new tool for use, with a live demo</span>
+            </label>
+          </div>
+          <p class="error" data-error-for="option"></p>
+        </div>
+
+        <div class="field">
+          <label for="area" data-i18n="label_area">Selected area</label>
+          <select id="area" name="area" required>
+            <option value="" disabled selected data-i18n="area_placeholder">Choose an area</option>
+            <option value="project_management" data-i18n="area_project_management">Project Management</option>
+            <option value="governance" data-i18n="area_governance">Governance</option>
+            <option value="data_analysis" data-i18n="area_data_analysis">Data Analysis</option>
+            <option value="government_communication" data-i18n="area_government_communication">Government Communication</option>
+            <option value="happiness_surveys" data-i18n="area_happiness_surveys">Happiness Surveys</option>
+            <option value="admin" data-i18n="area_admin">Admin</option>
+            <option value="excellence_assessment" data-i18n="area_excellence_assessment">Excellence Assessment</option>
+          </select>
+          <p class="error" data-error-for="area"></p>
+        </div>
+
+        <button type="submit" id="submit-btn" data-i18n="submit">Submit</button>
+
+        <p class="status" id="form-status" role="status" aria-live="polite"></p>
+      </form>
+    </div>
   </main>
 
-  <script src="script.js"></script>
+  <footer>&copy; TEC</footer>
+
+  <script src="i18n.js"></script>
+  <script src="form.js"></script>
 </body>
 </html>
