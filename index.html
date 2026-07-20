@@ -1,0 +1,47 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Team Check-in</title>
+  <meta name="description" content="Quick sign-up form." />
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <main class="card">
+    <h1>Team Check-in</h1>
+    <p class="subtitle">Fill in your details below.</p>
+
+    <form id="signup-form" novalidate>
+      <div class="field">
+        <label for="name">Name</label>
+        <input type="text" id="name" name="name" autocomplete="name" required />
+        <p class="error" data-error-for="name"></p>
+      </div>
+
+      <div class="field">
+        <label for="team">Team name</label>
+        <input type="text" id="team" name="team" autocomplete="organization" required />
+        <p class="error" data-error-for="team"></p>
+      </div>
+
+      <div class="field">
+        <label for="option">Option</label>
+        <select id="option" name="option" required>
+          <option value="" disabled selected>Choose one</option>
+          <option value="Option A">Option A</option>
+          <option value="Option B">Option B</option>
+          <option value="Option C">Option C</option>
+        </select>
+        <p class="error" data-error-for="option"></p>
+      </div>
+
+      <button type="submit" id="submit-btn">Submit</button>
+
+      <p class="status" id="form-status" role="status" aria-live="polite"></p>
+    </form>
+  </main>
+
+  <script src="script.js"></script>
+</body>
+</html>
