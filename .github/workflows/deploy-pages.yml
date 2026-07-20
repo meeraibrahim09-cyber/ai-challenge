@@ -2,7 +2,7 @@ name: Deploy static site to Pages
 
 on:
   push:
-    branches: ["main"]
+    branches: ["claude/simple-user-form-58a7fq"]
   workflow_dispatch:
 
 permissions:
