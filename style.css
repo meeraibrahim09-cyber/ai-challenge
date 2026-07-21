@@ -123,7 +123,7 @@ a {
   border-radius: 20px;
   overflow: hidden;
   background-color: var(--cream);
-  background-image: url("https://d8j0ntlcm91z4.cloudfront.net/user_3F08WW2hRYVcZrOzkfzmHyk3agR/hf_20260720_075810_30eb5ed9-5850-4d2b-bcec-ac8f29a29889.png");
+  background-image: url("https://d8j0ntlcm91z4.cloudfront.net/user_3F08WW2hRYVcZrOzkfzmHyk3agR/hf_20260721_085755_76d58dd4-1790-497c-860d-e32e1bc282a0.png");
   background-size: cover;
   background-position: center;
   min-height: 180px;
@@ -155,6 +155,10 @@ a {
   letter-spacing: -0.01em;
 }
 
+.hero-dashboard {
+  background-image: url("https://d8j0ntlcm91z4.cloudfront.net/user_3F08WW2hRYVcZrOzkfzmHyk3agR/hf_20260720_111252_d5501836-679d-48d4-aad0-4797615a2f49.png");
+}
+
 main {
   flex: 1;
   display: flex;
@@ -178,6 +182,13 @@ main {
   font-size: 0.9375rem;
 }
 
+.login-title {
+  margin: 0 0 4px;
+  font-size: 1.375rem;
+  letter-spacing: -0.01em;
+  color: var(--primary-dark);
+}
+
 .field {
   margin-bottom: 20px;
 }
@@ -191,6 +202,8 @@ main {
 
 input[type="text"],
 input[type="number"],
+input[type="email"],
+input[type="password"],
 select {
   width: 100%;
   padding: 11px 14px;
@@ -272,6 +285,87 @@ select[aria-invalid="true"] {
 
 .member-names li {
   margin-bottom: 2px;
+}
+
+.multiselect {
+  position: relative;
+}
+
+.multiselect-trigger {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  padding: 11px 14px;
+  font-size: 1rem;
+  font-family: inherit;
+  text-align: start;
+  color: var(--text);
+  background: var(--cream);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  cursor: pointer;
+}
+
+.multiselect-trigger:focus {
+  outline: 2px solid var(--primary);
+  outline-offset: 1px;
+}
+
+#area-value {
+  flex: 1;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.multiselect-placeholder {
+  color: var(--muted);
+}
+
+.multiselect-caret {
+  flex-shrink: 0;
+  width: 0;
+  height: 0;
+  border-left: 5px solid transparent;
+  border-right: 5px solid transparent;
+  border-top: 6px solid var(--muted);
+}
+
+.multiselect-panel {
+  position: absolute;
+  z-index: 20;
+  top: calc(100% + 4px);
+  inset-inline: 0;
+  max-height: 280px;
+  overflow-y: auto;
+  padding: 6px;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  box-shadow: 0 8px 24px rgba(42, 31, 27, 0.12);
+}
+
+.multiselect-option {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 9px 10px;
+  border-radius: 8px;
+  cursor: pointer;
+  font-size: 0.9375rem;
+}
+
+.multiselect-option:hover {
+  background: var(--cream);
+}
+
+.multiselect-option input {
+  flex-shrink: 0;
+  width: auto;
+  accent-color: var(--primary);
 }
 
 .radio-group {
@@ -363,7 +457,6 @@ footer {
   color: var(--muted);
 }
 
-/* Dashboard */
 .dashboard-wrap {
   width: 100%;
   max-width: 960px;
@@ -427,9 +520,86 @@ tbody tr:last-child td {
   color: var(--muted);
 }
 
+.stat-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+  gap: 12px;
+  margin-bottom: 16px;
+}
+
+.stat-card {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  padding: 16px 18px;
+}
+
+.stat-value {
+  font-size: 1.875rem;
+  font-weight: 700;
+  color: var(--primary-dark);
+  line-height: 1.1;
+}
+
+.stat-label {
+  font-size: 0.8125rem;
+  color: var(--muted);
+}
+
+.tag-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px;
+}
+
+.badge {
+  display: inline-block;
+  padding: 3px 10px;
+  border-radius: 999px;
+  font-size: 0.75rem;
+  font-weight: 700;
+  white-space: nowrap;
+}
+
+.badge-solution {
+  background: #fdece9;
+  color: var(--primary-dark);
+}
+
+.badge-demo {
+  background: #eef1e2;
+  color: #4c6b3f;
+}
+
+.refresh-icon {
+  font-size: 1rem;
+  line-height: 1;
+}
+
+#refresh-btn.is-loading {
+  opacity: 0.6;
+  pointer-events: none;
+}
+
+#refresh-btn.is-loading .refresh-icon {
+  animation: spin 0.8s linear infinite;
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
 @media (prefers-reduced-motion: reduce) {
   button[type="submit"] {
     transition: none;
+  }
+  #refresh-btn.is-loading .refresh-icon {
+    animation: none;
   }
 }
 
