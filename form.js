@@ -4,6 +4,9 @@ const statusEl = document.getElementById("form-status");
 const membersList = document.getElementById("members-list");
 const addMemberBtn = document.getElementById("add-member-btn");
 
+// Maximum number of characters allowed in any text input field.
+const MAX_LEN = 150;
+
 const AREA_KEYS = [
   "government_services",
   "excellence_assessment",
@@ -37,6 +40,7 @@ function addMemberRow(value = "") {
   input.type = "text";
   input.className = "member-input";
   input.value = value;
+  input.maxLength = MAX_LEN;
   input.setAttribute("placeholder", t.member_placeholder);
 
   const remove = document.createElement("button");
@@ -161,14 +165,26 @@ function validate() {
   const optionKeys = getSelectedOptions();
   const areaKeys = getSelectedAreaKeys();
 
-  setError("team_name", teamName ? "" : t.error_required_team_name);
-  if (!teamName) valid = false;
+  setError("team_name", "");
+  if (!teamName) {
+    setError("team_name", t.error_required_team_name);
+    valid = false;
+  } else if (teamName.length > MAX_LEN) {
+    setError("team_name", t.error_max_length);
+    valid = false;
+  }
 
   setError("total_members", totalMembers && Number(totalMembers) > 0 ? "" : t.error_required_total_members);
   if (!totalMembers || Number(totalMembers) <= 0) valid = false;
 
-  setError("members", memberNames.length > 0 ? "" : t.error_required_members);
-  if (memberNames.length === 0) valid = false;
+  setError("members", "");
+  if (memberNames.length === 0) {
+    setError("members", t.error_required_members);
+    valid = false;
+  } else if (memberNames.some((name) => name.length > MAX_LEN)) {
+    setError("members", t.error_max_length);
+    valid = false;
+  }
 
   setError("option", optionKeys.length > 0 ? "" : t.error_required_option);
   if (optionKeys.length === 0) valid = false;
