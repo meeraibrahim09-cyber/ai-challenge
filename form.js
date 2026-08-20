@@ -9,6 +9,7 @@ const AREA_KEYS = [
   "excellence_assessment",
   "happiness_surveys",
   "policies",
+  "legislations",
   "dubai_plan_agendas",
   "sg_office",
   "decision_follow_up",
