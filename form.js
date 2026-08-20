@@ -174,8 +174,12 @@ function validate() {
     valid = false;
   }
 
-  setError("total_members", totalMembers && Number(totalMembers) > 0 ? "" : t.error_required_total_members);
-  if (!totalMembers || Number(totalMembers) <= 0) valid = false;
+  const totalNum = Number(totalMembers);
+  setError("total_members", "");
+  if (!totalMembers || !Number.isInteger(totalNum) || totalNum < 1 || totalNum > 5) {
+    setError("total_members", t.error_range_total_members);
+    valid = false;
+  }
 
   setError("members", "");
   if (memberNames.length === 0) {
