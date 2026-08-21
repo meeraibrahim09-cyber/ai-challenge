@@ -120,7 +120,7 @@ async function loadSubmissions() {
 
   try {
     const response = await fetch(
-      `${SUPABASE_URL}/rest/v1/${SUPABASE_TABLE}?select=*&order=created_at.desc`,
+      `${SUPABASE_URL}/rest/v1/${SUPABASE_TABLE}?select=*&hidden=eq.false&order=created_at.desc`,
       {
         headers: {
           apikey: SUPABASE_ANON_KEY,
