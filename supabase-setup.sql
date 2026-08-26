@@ -26,3 +26,30 @@ create policy "anon can read submissions"
   for select
   to anon
   using (true);
+
+-- Session feedback survey responses.
+create table if not exists public.survey_responses (
+  id bigint generated always as identity primary key,
+  created_at timestamptz not null default now(),
+  rating int not null,
+  enjoyed text not null default '',
+  ideas text not null default '',
+  expand text not null default '',
+  improve text not null default ''
+);
+
+alter table public.survey_responses enable row level security;
+
+-- Allow the public survey (anon key) to insert responses.
+create policy "anon can insert survey_responses"
+  on public.survey_responses
+  for insert
+  to anon
+  with check (true);
+
+-- Allow authenticated dashboard users to read responses.
+create policy "authenticated can read survey_responses"
+  on public.survey_responses
+  for select
+  to authenticated
+  using (true);

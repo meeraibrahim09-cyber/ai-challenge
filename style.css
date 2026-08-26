@@ -381,6 +381,68 @@ select[aria-invalid="true"] {
   accent-color: var(--primary);
 }
 
+.question-hint {
+  margin: -2px 0 10px;
+  font-size: 0.8125rem;
+  color: var(--muted);
+}
+
+.rating-scale {
+  display: flex;
+  gap: 8px;
+}
+
+.rating-btn {
+  flex: 1;
+  padding: 12px 0;
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  background: var(--cream);
+  color: var(--text);
+  font-size: 1.125rem;
+  font-weight: 700;
+  cursor: pointer;
+  font-family: inherit;
+  transition: background 0.1s ease, border-color 0.1s ease;
+}
+
+.rating-btn:hover {
+  border-color: var(--primary);
+}
+
+.rating-btn.selected {
+  background: var(--primary);
+  border-color: var(--primary);
+  color: #fff;
+}
+
+.rating-captions {
+  display: flex;
+  justify-content: space-between;
+  gap: 8px;
+  margin-top: 8px;
+  font-size: 0.8125rem;
+  color: var(--muted);
+}
+
+textarea {
+  width: 100%;
+  padding: 11px 14px;
+  font-size: 1rem;
+  color: var(--text);
+  background: var(--cream);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  font-family: inherit;
+  resize: vertical;
+  min-height: 84px;
+}
+
+textarea:focus {
+  outline: 2px solid var(--primary);
+  outline-offset: 1px;
+}
+
 .radio-group {
   display: flex;
   flex-direction: column;

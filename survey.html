@@ -1,0 +1,144 @@
+<!doctype html>
+<html lang="en" dir="ltr">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Summer at TEC — Session Survey</title>
+  <meta name="description" content="Session feedback survey." />
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <header class="topbar">
+    <div class="brand">
+      <img src="https://meeraibrahim09-cyber.github.io/ai-challenge/assets/logo.png" alt="Summer at TEC" />
+    </div>
+    <nav class="topbar-actions">
+      <a class="pill-link" href="index.html" data-i18n="nav_form">Register</a>
+      <a class="pill-link" href="dashboard.html" data-i18n="nav_dashboard">Dashboard</a>
+      <a class="pill-link active" href="survey.html" data-i18n="nav_survey">Survey</a>
+      <button type="button" class="pill-button" id="lang-toggle" data-i18n="lang_toggle">العربية</button>
+    </nav>
+  </header>
+
+  <div class="hero">
+    <div class="hero-inner">
+      <p class="hero-eyebrow" data-i18n="campaign">Summer at TEC</p>
+      <h1 data-i18n="survey_title">Session Survey</h1>
+    </div>
+  </div>
+
+  <main>
+    <div class="card">
+      <p class="subtitle" data-i18n="survey_subtitle">Share your feedback on today's AI Challenge session.</p>
+
+      <form id="survey-form" class="survey-form" novalidate>
+        <!-- Q1 — rating scale -->
+        <div class="field">
+          <label data-i18n="survey_q1">How would you rate your overall experience today?</label>
+          <input type="hidden" id="rating" name="rating" />
+          <div class="rating-scale" id="rating-scale" role="group" aria-labelledby="rating">
+            <button type="button" class="rating-btn" data-value="1" aria-pressed="false">1</button>
+            <button type="button" class="rating-btn" data-value="2" aria-pressed="false">2</button>
+            <button type="button" class="rating-btn" data-value="3" aria-pressed="false">3</button>
+            <button type="button" class="rating-btn" data-value="4" aria-pressed="false">4</button>
+            <button type="button" class="rating-btn" data-value="5" aria-pressed="false">5</button>
+          </div>
+          <div class="rating-captions">
+            <span data-i18n="survey_q1_low">1 · Needs debugging 🐞</span>
+            <span data-i18n="survey_q1_high">5 · Ready to scale! 🚀</span>
+          </div>
+          <p class="error" data-error-for="rating"></p>
+        </div>
+
+        <!-- Q2 — enjoyed most -->
+        <div class="field">
+          <label data-i18n="survey_q2">What did you enjoy most about today's session?</label>
+          <p class="question-hint" data-i18n="survey_select_all">Select all that apply</p>
+          <div class="radio-group" role="group">
+            <label class="radio-option">
+              <input type="checkbox" name="enjoyed" value="AI Quiz" />
+              <span data-i18n="survey_q2_ai_quiz">AI Quiz</span>
+            </label>
+            <label class="radio-option">
+              <input type="checkbox" name="enjoyed" value="Prototype Presentations" />
+              <span data-i18n="survey_q2_prototype">Prototype Presentations</span>
+            </label>
+            <label class="radio-option">
+              <input type="checkbox" name="enjoyed" value="Interactive Session Format" />
+              <span data-i18n="survey_q2_interactive">Interactive Session Format</span>
+            </label>
+          </div>
+          <p class="error" data-error-for="enjoyed"></p>
+        </div>
+
+        <!-- Q3 — practical ideas -->
+        <div class="field">
+          <label data-i18n="survey_q3">Did today's session give you practical ideas for how AI could be applied in your work?</label>
+          <p class="question-hint" data-i18n="survey_select_all">Select all that apply</p>
+          <div class="radio-group" role="group">
+            <label class="radio-option">
+              <input type="checkbox" name="ideas" value="Definitely" />
+              <span data-i18n="survey_q3_definitely">Definitely</span>
+            </label>
+            <label class="radio-option">
+              <input type="checkbox" name="ideas" value="Yes, somewhat" />
+              <span data-i18n="survey_q3_somewhat">Yes, somewhat</span>
+            </label>
+            <label class="radio-option">
+              <input type="checkbox" name="ideas" value="A little" />
+              <span data-i18n="survey_q3_a_little">A little</span>
+            </label>
+            <label class="radio-option">
+              <input type="checkbox" name="ideas" value="Not yet" />
+              <span data-i18n="survey_q3_not_yet">Not yet</span>
+            </label>
+          </div>
+          <p class="error" data-error-for="ideas"></p>
+        </div>
+
+        <!-- Q4 — expand across Dubai Government -->
+        <div class="field">
+          <label data-i18n="survey_q4">Would you like to see this interactive AI Challenge format expanded across Dubai Government?</label>
+          <p class="question-hint" data-i18n="survey_select_all">Select all that apply</p>
+          <div class="radio-group" role="group">
+            <label class="radio-option">
+              <input type="checkbox" name="expand" value="Definitely" />
+              <span data-i18n="survey_q4_definitely">Definitely</span>
+            </label>
+            <label class="radio-option">
+              <input type="checkbox" name="expand" value="Yes, for selected topics or entities" />
+              <span data-i18n="survey_q4_selected">Yes, for selected topics or entities</span>
+            </label>
+            <label class="radio-option">
+              <input type="checkbox" name="expand" value="Maybe, with improvements" />
+              <span data-i18n="survey_q4_maybe">Maybe, with improvements</span>
+            </label>
+            <label class="radio-option">
+              <input type="checkbox" name="expand" value="Not at this stage" />
+              <span data-i18n="survey_q4_not_now">Not at this stage</span>
+            </label>
+          </div>
+          <p class="error" data-error-for="expand"></p>
+        </div>
+
+        <!-- Q5 — one improvement (word cloud) -->
+        <div class="field">
+          <label for="improve" data-i18n="survey_q5">What is ONE thing we should add, change, or improve for the next AI Challenge?</label>
+          <textarea id="improve" name="improve" maxlength="150" rows="3"></textarea>
+          <p class="error" data-error-for="improve"></p>
+        </div>
+
+        <button type="submit" id="survey-submit" data-i18n="survey_submit">Submit survey</button>
+
+        <p class="status" id="survey-status" role="status" aria-live="polite"></p>
+      </form>
+    </div>
+  </main>
+
+  <footer>&copy; TEC</footer>
+
+  <script src="config.js"></script>
+  <script src="i18n.js"></script>
+  <script src="survey.js"></script>
+</body>
+</html>
