@@ -32,9 +32,9 @@ create table if not exists public.survey_responses (
   id bigint generated always as identity primary key,
   created_at timestamptz not null default now(),
   rating int not null,
-  enjoyed text not null default '',
-  ideas text not null default '',
-  expand text not null default '',
+  enjoyed jsonb not null default '[]'::jsonb,
+  ideas jsonb not null default '[]'::jsonb,
+  expand jsonb not null default '[]'::jsonb,
   improve text not null default ''
 );
 

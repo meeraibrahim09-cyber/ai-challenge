@@ -80,9 +80,9 @@ form.addEventListener("submit", async (event) => {
 
   const payload = {
     rating: Number(ratingInput.value),
-    enjoyed: getChecked("enjoyed").join(", "),
-    ideas: getChecked("ideas").join(", "),
-    expand: getChecked("expand").join(", "),
+    enjoyed: getChecked("enjoyed"),
+    ideas: getChecked("ideas"),
+    expand: getChecked("expand"),
     improve: form.elements.improve.value.trim(),
   };
 

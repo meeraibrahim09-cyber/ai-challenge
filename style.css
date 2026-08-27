@@ -624,6 +624,115 @@ tbody tr:last-child td {
   color: var(--muted);
 }
 
+.dashboard-tabs {
+  display: flex;
+  gap: 6px;
+  margin-bottom: 16px;
+  border-bottom: 1px solid var(--border);
+}
+
+.tab-btn {
+  padding: 10px 18px;
+  border: none;
+  background: transparent;
+  color: var(--muted);
+  font-size: 0.9375rem;
+  font-weight: 700;
+  cursor: pointer;
+  font-family: inherit;
+  border-bottom: 2px solid transparent;
+  margin-bottom: -1px;
+}
+
+.tab-btn:hover {
+  color: var(--primary-dark);
+}
+
+.tab-btn.active {
+  color: var(--primary-dark);
+  border-bottom-color: var(--primary);
+}
+
+.result-block {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 16px;
+  padding: 20px 22px;
+  margin-bottom: 16px;
+}
+
+.result-title {
+  margin: 0 0 14px;
+  font-size: 1rem;
+  color: var(--primary-dark);
+  line-height: 1.4;
+}
+
+.result-row {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 10px;
+}
+
+.result-row:last-child {
+  margin-bottom: 0;
+}
+
+.result-label {
+  flex: 0 0 42%;
+  max-width: 42%;
+  font-size: 0.875rem;
+}
+
+.bar {
+  flex: 1;
+  height: 10px;
+  background: var(--cream-deep);
+  border-radius: 999px;
+  overflow: hidden;
+}
+
+.bar-fill {
+  height: 100%;
+  background: var(--primary);
+  border-radius: 999px;
+  min-width: 2px;
+  transition: width 0.3s ease;
+}
+
+.bar-count {
+  flex: 0 0 auto;
+  font-size: 0.8125rem;
+  color: var(--muted);
+  white-space: nowrap;
+  font-variant-numeric: tabular-nums;
+}
+
+.wordcloud {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 6px 14px;
+  line-height: 1.5;
+}
+
+.cloud-word {
+  font-weight: 700;
+  line-height: 1.1;
+}
+
+.cloud-tone-0 { color: var(--primary); }
+.cloud-tone-1 { color: #4c6b3f; }
+.cloud-tone-2 { color: var(--primary-dark); }
+.cloud-tone-3 { color: #8a6d3b; }
+
+.wordcloud-empty {
+  margin: 0;
+  color: var(--muted);
+  font-size: 0.875rem;
+}
+
 .tag-list {
   display: flex;
   flex-wrap: wrap;
@@ -675,6 +784,9 @@ tbody tr:last-child td {
   }
   #refresh-btn.is-loading .refresh-icon {
     animation: none;
+  }
+  .bar-fill {
+    transition: none;
   }
 }
 

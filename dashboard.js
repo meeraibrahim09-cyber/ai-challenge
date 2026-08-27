@@ -19,6 +19,58 @@ const statSolutionEl = document.getElementById("stat-solution");
 const statDemoEl = document.getElementById("stat-demo");
 
 let submissions = [];
+let surveyRows = [];
+
+const SURVEY_TABLE = "survey_responses";
+const surveyCountEl = document.getElementById("survey-count");
+const surveyAvgEl = document.getElementById("survey-avg");
+const surveyResultsEl = document.getElementById("survey-results");
+const surveyMessageEl = document.getElementById("survey-message");
+const tabButtons = Array.from(document.querySelectorAll(".tab-btn"));
+const panels = Array.from(document.querySelectorAll("#teams-panel, #survey-panel"));
+
+// Multi-select survey questions: field name + canonical option values mapped to i18n keys.
+const SURVEY_QUESTIONS = [
+  {
+    field: "enjoyed",
+    titleKey: "survey_q2",
+    options: [
+      ["AI Quiz", "survey_q2_ai_quiz"],
+      ["Prototype Presentations", "survey_q2_prototype"],
+      ["Interactive Session Format", "survey_q2_interactive"],
+    ],
+  },
+  {
+    field: "ideas",
+    titleKey: "survey_q3",
+    options: [
+      ["Definitely", "survey_q3_definitely"],
+      ["Yes, somewhat", "survey_q3_somewhat"],
+      ["A little", "survey_q3_a_little"],
+      ["Not yet", "survey_q3_not_yet"],
+    ],
+  },
+  {
+    field: "expand",
+    titleKey: "survey_q4",
+    options: [
+      ["Definitely", "survey_q4_definitely"],
+      ["Yes, for selected topics or entities", "survey_q4_selected"],
+      ["Maybe, with improvements", "survey_q4_maybe"],
+      ["Not at this stage", "survey_q4_not_now"],
+    ],
+  },
+];
+
+// Common words to skip in the word cloud (English + Arabic).
+const SURVEY_STOPWORDS = new Set([
+  "the", "and", "for", "with", "that", "this", "you", "your", "our", "was", "are",
+  "have", "has", "had", "not", "but", "all", "any", "can", "could", "would", "should",
+  "more", "most", "some", "such", "than", "then", "them", "they", "there", "were",
+  "about", "into", "from", "will", "just", "very", "really", "much", "also", "one",
+  "في", "من", "على", "إلى", "عن", "مع", "أن", "أو", "كان", "هذا", "هذه", "التي",
+  "الذي", "ما", "لا", "أكثر", "كل", "قد", "و", "يجب",
+]);
 
 function currentDict() {
   return translations[getLang()];
@@ -258,6 +310,188 @@ function render() {
   });
 }
 
+async function loadSurvey() {
+  const token = await validAccessToken();
+  if (!token) {
+    showLogin();
+    return;
+  }
+
+  surveyMessageEl.setAttribute("data-i18n", "dashboard_loading");
+  surveyMessageEl.textContent = currentDict().dashboard_loading;
+  surveyMessageEl.hidden = false;
+
+  try {
+    const response = await fetch(
+      `${SUPABASE_URL}/rest/v1/${SURVEY_TABLE}?select=*&order=created_at.desc`,
+      {
+        headers: {
+          apikey: SUPABASE_ANON_KEY,
+          Authorization: `Bearer ${token}`,
+        },
+      }
+    );
+    if (response.status === 401) {
+      clearSession();
+      showLogin();
+      return;
+    }
+    if (!response.ok) throw new Error("bad response");
+    surveyRows = await response.json();
+    renderSurvey();
+  } catch (err) {
+    surveyResultsEl.innerHTML = "";
+    surveyMessageEl.removeAttribute("data-i18n");
+    surveyMessageEl.textContent = currentDict().dashboard_error;
+    surveyMessageEl.hidden = false;
+  }
+}
+
+function countBlock(title, rows) {
+  const t = currentDict();
+  const max = Math.max(1, ...rows.map((r) => r.count));
+  const total = rows.reduce((sum, r) => sum + r.count, 0);
+
+  const block = document.createElement("div");
+  block.className = "result-block";
+
+  const h = document.createElement("h3");
+  h.className = "result-title";
+  h.textContent = title;
+  block.appendChild(h);
+
+  rows.forEach((r) => {
+    const row = document.createElement("div");
+    row.className = "result-row";
+
+    const label = document.createElement("span");
+    label.className = "result-label";
+    label.textContent = r.label;
+    row.appendChild(label);
+
+    const bar = document.createElement("div");
+    bar.className = "bar";
+    const fill = document.createElement("div");
+    fill.className = "bar-fill";
+    fill.style.width = (r.count / max) * 100 + "%";
+    bar.appendChild(fill);
+    row.appendChild(bar);
+
+    const count = document.createElement("span");
+    count.className = "bar-count";
+    const pct = total ? Math.round((r.count / total) * 100) : 0;
+    count.textContent = `${r.count} · ${pct}%`;
+    row.appendChild(count);
+
+    block.appendChild(row);
+  });
+
+  return block;
+}
+
+function buildWordCloud() {
+  const t = currentDict();
+  const block = document.createElement("div");
+  block.className = "result-block";
+
+  const h = document.createElement("h3");
+  h.className = "result-title";
+  h.textContent = t.survey_q5;
+  block.appendChild(h);
+
+  const text = surveyRows.map((r) => r.improve || "").join(" ").toLowerCase();
+  const words = text.split(/[^\p{L}\p{N}]+/u).filter((w) => w.length > 2 && !SURVEY_STOPWORDS.has(w));
+  const freq = {};
+  words.forEach((w) => {
+    freq[w] = (freq[w] || 0) + 1;
+  });
+  const entries = Object.entries(freq)
+    .sort((a, b) => b[1] - a[1])
+    .slice(0, 40);
+
+  if (entries.length === 0) {
+    const empty = document.createElement("p");
+    empty.className = "wordcloud-empty";
+    empty.textContent = t.survey_wordcloud_empty;
+    block.appendChild(empty);
+    return block;
+  }
+
+  const maxF = entries[0][1];
+  const minF = entries[entries.length - 1][1];
+  const cloud = document.createElement("div");
+  cloud.className = "wordcloud";
+  entries.forEach(([word, f], i) => {
+    const span = document.createElement("span");
+    span.className = "cloud-word cloud-tone-" + (i % 4);
+    const scale = maxF === minF ? 1 : (f - minF) / (maxF - minF);
+    span.style.fontSize = (0.85 + scale * 1.4).toFixed(2) + "rem";
+    span.textContent = word;
+    span.title = `${word} · ${f}`;
+    cloud.appendChild(span);
+  });
+  block.appendChild(cloud);
+  return block;
+}
+
+function renderSurvey() {
+  const t = currentDict();
+  const count = surveyRows.length;
+  surveyCountEl.textContent = count;
+
+  const ratings = surveyRows.map((r) => Number(r.rating)).filter((n) => !Number.isNaN(n));
+  const avg = ratings.length ? ratings.reduce((a, b) => a + b, 0) / ratings.length : null;
+  surveyAvgEl.textContent = avg === null ? "–" : avg.toFixed(1);
+
+  surveyResultsEl.innerHTML = "";
+
+  if (count === 0) {
+    surveyMessageEl.setAttribute("data-i18n", "survey_empty");
+    surveyMessageEl.textContent = t.survey_empty;
+    surveyMessageEl.hidden = false;
+    return;
+  }
+  surveyMessageEl.hidden = true;
+
+  // Q1 — rating distribution (1..5).
+  const ratingRows = [1, 2, 3, 4, 5].map((v) => ({
+    label: String(v),
+    count: ratings.filter((n) => n === v).length,
+  }));
+  surveyResultsEl.appendChild(countBlock(t.survey_q1, ratingRows));
+
+  // Q2..Q4 — multi-select tallies.
+  SURVEY_QUESTIONS.forEach((q) => {
+    const rows = q.options.map(([value, key]) => ({
+      label: t[key],
+      count: surveyRows.filter((r) => Array.isArray(r[q.field]) && r[q.field].includes(value)).length,
+    }));
+    surveyResultsEl.appendChild(countBlock(t[q.titleKey], rows));
+  });
+
+  // Q5 — word cloud.
+  surveyResultsEl.appendChild(buildWordCloud());
+}
+
+function refreshAll() {
+  loadSubmissions();
+  loadSurvey();
+}
+
+tabButtons.forEach((btn) => {
+  btn.addEventListener("click", () => {
+    const panelId = btn.dataset.panel;
+    tabButtons.forEach((b) => {
+      const active = b === btn;
+      b.classList.toggle("active", active);
+      b.setAttribute("aria-selected", active ? "true" : "false");
+    });
+    panels.forEach((p) => {
+      p.hidden = p.id !== panelId;
+    });
+  });
+});
+
 loginForm.addEventListener("submit", async (event) => {
   event.preventDefault();
   const t = currentDict();
@@ -275,7 +509,7 @@ loginForm.addEventListener("submit", async (event) => {
     await login(email, password);
     loginForm.reset();
     showDashboard();
-    await loadSubmissions();
+    refreshAll();
   } catch (err) {
     loginStatus.textContent = t.login_error;
     loginStatus.setAttribute("data-state", "error");
@@ -290,17 +524,18 @@ logoutBtn.addEventListener("click", () => {
   showLogin();
 });
 
-refreshBtn.addEventListener("click", loadSubmissions);
+refreshBtn.addEventListener("click", refreshAll);
 
 document.addEventListener("langchange", () => {
   if (!loginBtn.disabled) loginBtn.textContent = currentDict().login_submit;
   if (!dashboardView.hidden && submissions.length) render();
+  if (!dashboardView.hidden && surveyRows.length) renderSurvey();
 });
 
 document.addEventListener("DOMContentLoaded", () => {
   if (getSession()) {
     showDashboard();
-    loadSubmissions();
+    refreshAll();
   } else {
     showLogin();
   }

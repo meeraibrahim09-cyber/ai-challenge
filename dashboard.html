@@ -55,40 +55,65 @@
         </button>
       </div>
 
-      <div class="stat-grid" id="stat-grid">
-        <div class="stat-card">
-          <span class="stat-value" id="stat-teams">0</span>
-          <span class="stat-label" data-i18n="stat_teams">Teams</span>
+      <div class="dashboard-tabs" role="tablist">
+        <button type="button" class="tab-btn active" id="tab-teams" data-panel="teams-panel" role="tab" aria-selected="true" data-i18n="tab_teams">Teams</button>
+        <button type="button" class="tab-btn" id="tab-survey" data-panel="survey-panel" role="tab" aria-selected="false" data-i18n="tab_survey">Survey</button>
+      </div>
+
+      <div id="teams-panel" role="tabpanel" aria-labelledby="tab-teams">
+        <div class="stat-grid" id="stat-grid">
+          <div class="stat-card">
+            <span class="stat-value" id="stat-teams">0</span>
+            <span class="stat-label" data-i18n="stat_teams">Teams</span>
+          </div>
+          <div class="stat-card">
+            <span class="stat-value" id="stat-members">0</span>
+            <span class="stat-label" data-i18n="stat_members">Total members</span>
+          </div>
+          <div class="stat-card">
+            <span class="stat-value" id="stat-solution">0</span>
+            <span class="stat-label" data-i18n="stat_solution">AI solutions</span>
+          </div>
+          <div class="stat-card">
+            <span class="stat-value" id="stat-demo">0</span>
+            <span class="stat-label" data-i18n="stat_demo">New AI tools</span>
+          </div>
         </div>
-        <div class="stat-card">
-          <span class="stat-value" id="stat-members">0</span>
-          <span class="stat-label" data-i18n="stat_members">Total members</span>
-        </div>
-        <div class="stat-card">
-          <span class="stat-value" id="stat-solution">0</span>
-          <span class="stat-label" data-i18n="stat_solution">AI solutions</span>
-        </div>
-        <div class="stat-card">
-          <span class="stat-value" id="stat-demo">0</span>
-          <span class="stat-label" data-i18n="stat_demo">New AI tools</span>
+
+        <div class="table-card">
+          <table id="submissions-table" hidden>
+            <thead>
+              <tr>
+                <th data-i18n="col_team_name">Team name</th>
+                <th data-i18n="col_total_members">Members</th>
+                <th data-i18n="col_member_names">Team members</th>
+                <th data-i18n="col_option">Option</th>
+                <th data-i18n="col_area">Areas</th>
+                <th data-i18n="col_submitted">Submitted</th>
+              </tr>
+            </thead>
+            <tbody id="submissions-body"></tbody>
+          </table>
+          <p class="dashboard-message" id="dashboard-message" data-i18n="dashboard_loading">Loading submissions...</p>
         </div>
       </div>
 
-      <div class="table-card">
-        <table id="submissions-table" hidden>
-          <thead>
-            <tr>
-              <th data-i18n="col_team_name">Team name</th>
-              <th data-i18n="col_total_members">Members</th>
-              <th data-i18n="col_member_names">Team members</th>
-              <th data-i18n="col_option">Option</th>
-              <th data-i18n="col_area">Areas</th>
-              <th data-i18n="col_submitted">Submitted</th>
-            </tr>
-          </thead>
-          <tbody id="submissions-body"></tbody>
-        </table>
-        <p class="dashboard-message" id="dashboard-message" data-i18n="dashboard_loading">Loading submissions...</p>
+      <div id="survey-panel" role="tabpanel" aria-labelledby="tab-survey" hidden>
+        <div class="stat-grid">
+          <div class="stat-card">
+            <span class="stat-value" id="survey-count">0</span>
+            <span class="stat-label" data-i18n="survey_stat_responses">Responses</span>
+          </div>
+          <div class="stat-card">
+            <span class="stat-value" id="survey-avg">–</span>
+            <span class="stat-label" data-i18n="survey_stat_avg">Average rating</span>
+          </div>
+        </div>
+
+        <div id="survey-results"></div>
+        <div class="table-card">
+          <p class="dashboard-message" id="survey-message" data-i18n="dashboard_loading">Loading submissions...</p>
+        </div>
       </div>
     </div>
   </main>
